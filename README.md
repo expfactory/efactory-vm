@@ -1,6 +1,4 @@
-# CogatPheno-VM: A virtual machine to deploy Cognitive Phenotype Tagging
-
-[CogatPheno](http://www.github.com/vsoch/CogatPheno) is a Django application and database that allows for sharing of assessments, and tagging with behavioral concepts. This virtual machine deploys the Django Application to an Amazon instance.
+# psiturk-vm: A virtual machine to deploy psiturk infrastructure
 
 ## Setting up the virtual machine
 
@@ -10,17 +8,19 @@
 
 3. If you don't already have it, install [git] (https://git-scm.com/downloads)
 
-4.  cd to the directory where you want to house the project, and then clone the myconnectome vagrant setup:
-`git clone https://github.com/vsoch/cogatpheno-vm.git`
+4.  cd to the directory where you want to house the project, and then clone the vagrant setup:
+`git clone https://github.com/psiturk/psiturk-vm.git`
 
-5. cd into the vm directory: `cd cogatpheno-vm`
+5. cd into the vm directory: `cd psiturk-vm`
 
-6. set up the vagrant VM (which may take a little while):
+6. (instruction here for cloning/generating experiment)
+
+7. set up the vagrant VM (which may take a little while):
 `vagrant up`
 
-7.  Step 6 will automatically deploy the Django application to the configuration on Amazon that you have specified.
+8.  Step 7 will automatically deploy the infrastructure to the configuration on Amazon that you have specified.
 
-## Log in with SH
+## Log in with SSH
 
 If you wish to log into the virtual machine and programatically access the application, you can do so with:
 
