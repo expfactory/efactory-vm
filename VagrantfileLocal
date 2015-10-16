@@ -38,8 +38,8 @@ sudo apt-get install -y --force-yes pgadmin3
 sudo apt-get install -y --force-yes libpq-dev
 
 # Install MySQL
-
-# Install sqlite
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password psiturkvm'
+sudo apt-get install -y --force-yes mysql-server
 
 sudo /etc/init.d/nginx start
 
@@ -51,20 +51,24 @@ fi
 
 if [ ! -d $HOME/psiturk-build/experiments ]
 then
-  git clone https://github.com/psiturk/psiturk-battery.git $HOME/psiturk-build/experiments
+  git clone https://github.com/psiturk/psiturk-experiments.git $HOME/psiturk-build/experiments
 fi
 
 if [ ! -d $HOME/psiturk-build/psiturk-python ]
 then
-  git clone https://github.com/psiturk/psiturk-battery.git $HOME/psiturk-build/psiturk-python
+  git clone https://github.com/psiturk/psiturk-python.git $HOME/psiturk-build/psiturk-python
   cd $HOME/psiturk-build/psiturk-python
   $HOME/miniconda/bin/pip install -r requirements.txt  
+  $HOME/miniconda/bin/python setup.py install
 fi
 
 if [ ! -d $HOME/psiturk-build/psiturk-vm ]
 then
-  git clone https://github.com/psiturk/psiturk-battery.git $HOME/psiturk-build/psiturk-vm
+  git clone https://github.com/psiturk/psiturk-vm.git $HOME/psiturk-build/psiturk-vm
 fi
+
+# Make directory for battery
+mkdir -p $HOME/psiturk-battery
 
 CUSTOM_INSTALL="False"
 
