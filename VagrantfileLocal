@@ -78,8 +78,9 @@ else
                battery_repo = sys.argv[1]
                experiment_repo = sys.argv[2]
                battery_dest = sys.argv[3]
-               experiments = [[SUB_PSITURKBATTERY_SUB]]
-               generate(battery_repo,battery_dest,experiment_repo,experiments=experiments)        
+               config = [SUB_CONFIG_SUB]
+               experiments = [SUB_EXPERIMENTS_SUB]
+               generate(battery_repo,battery_dest,experiment_repo,experiments=experiments,config=config)        
         """ >/tmp/aijfaef
         sudo cp /tmp/aijfaef $HOME/psiturk-build/psiturk-vm/script/custom_setup_battery.py
     fi
