@@ -8,9 +8,9 @@ $script = <<SCRIPT
 if [ ! -d $HOME/miniconda ]
 then
  # install anaconda
- wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
- chmod +x miniconda.sh
- ./miniconda.sh -b
+ wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86.sh
+ chmod +x Miniconda-latest-Linux-x86.sh
+ ./Miniconda-latest-Linux-x86.sh -b
  echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .bashrc
  echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
 fi
@@ -37,31 +37,71 @@ sudo apt-get install -y --force-yes postgresql postgresql-contrib
 sudo apt-get install -y --force-yes pgadmin3
 sudo apt-get install -y --force-yes libpq-dev
 
+# Install MySQL
+
+# Install sqlite
+
 sudo /etc/init.d/nginx start
 
-# Set up the example
-psiturk-setup-example
+# Download experiments and battery repos
+if [ ! -d $HOME/psiturk-build/battery ]
+then
+  git clone https://github.com/psiturk/psiturk-battery.git $HOME/psiturk-build/battery
+fi
 
-#SUB_PSITURKBATTERY_SUB
+if [ ! -d $HOME/psiturk-build/experiments ]
+then
+  git clone https://github.com/psiturk/psiturk-battery.git $HOME/psiturk-build/experiments
+fi
+
+if [ ! -d $HOME/psiturk-build/psiturk-python ]
+then
+  git clone https://github.com/psiturk/psiturk-battery.git $HOME/psiturk-build/psiturk-python
+  cd $HOME/psiturk-build/psiturk-python
+  $HOME/miniconda/bin/pip install -r requirements.txt  
+fi
+
+if [ ! -d $HOME/psiturk-build/psiturk-vm ]
+then
+  git clone https://github.com/psiturk/psiturk-battery.git $HOME/psiturk-build/psiturk-vm
+fi
+
+CUSTOM_INSTALL="False"
+
+if [[ $CUSTOM_INSTALL == "False" ]] ; then
+    # Create and run script for all valid experiments
+    chmod u+x $HOME/psiturk-build/psiturk-vm/script/standard_setup_battery.py 
+    ./$HOME/psiturk-build/psiturk-vm/script/standard_setup_battery.py
+
+else
+
+    if ! [ -f $HOME/psiturk-build/psiturk-vm/script/custom_setup_battery.py ]; then
+        echo """#!/usr/bin/python
+               from psiturkpy.battery import generate
+               import sys
+               battery_repo = sys.argv[1]
+               experiment_repo = sys.argv[2]
+               battery_dest = sys.argv[3]
+               experiments = [[SUB_PSITURKBATTERY_SUB]]
+               generate(battery_repo,battery_dest,experiment_repo,experiments=experiments)        
+        """ >/tmp/aijfaef
+        sudo cp /tmp/aijfaef $HOME/psiturk-build/psiturk-vm/script/custom_setup_battery.py
+    fi
+    chmod u+x $HOME/psiturk-build/psiturk-vm/script/custom_setup_battery.py
+    ./$HOME/psiturk-build/psiturk-vm/script/custom_setup_battery.py
+
+fi 
 
 SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.ssh.forward_x11 = true
 
   config.vm.define :engine do |engine_config|
-    engine_config.vm.box = "precise64"
-    engine_config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+    engine_config.vm.box = "ubuntu12.04-x86"
+    engine_config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
     engine_config.vm.network :private_network, ip: "192.128.0.20"
     engine_config.vm.hostname = 'psiturk-battery'
-
-    engine_config.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
-      vb.customize ["modifyvm", :id, "--ioapic", "on"]
-      vb.customize ["modifyvm", :id, "--memory", "4096"]
-      vb.customize ["modifyvm", :id, "--cpus", "4"]
-    end
 
     engine_config.vm.provision "shell", :privileged => false, inline: $script
   end
