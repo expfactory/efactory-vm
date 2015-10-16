@@ -36,10 +36,13 @@ $HOME/miniconda/bin/pip install git+git://github.com/NYUCCL/psiTurk.git@master
 sudo apt-get install -y --force-yes postgresql postgresql-contrib
 sudo apt-get install -y --force-yes pgadmin3
 sudo apt-get install -y --force-yes libpq-dev
+sudo -u postgres psql -c "CREATE USER postgres WITH PASSWORD 'psiturkpy';"
+sudo -u postgres psql -c "CREATE DATABASE psiturkpy;"
 
 # Install MySQL
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password psiturkpy'
 sudo apt-get install -y --force-yes mysql-server
+mysql -uroot < $HOME/psiturk-build/psiturk-vm/script/createdb.sql
 
 sudo /etc/init.d/nginx start
 
@@ -56,6 +59,9 @@ fi
 # Download experiments and battery repos
 chmod u+x $HOME/psiturk-build/psiturk-python/script/download_repos.py
 $HOME/miniconda/bin/python $HOME/psiturk-build/psiturk-python/script/download_repos.py $HOME/psiturk-build
+
+# Replace standard index.html with link to psiturkpy docs
+sudo mv $HOME/psiturk-build/psiturk-vm/static/index.html /usr/share/nginx/www/index.html
 
 CUSTOM_INSTALL="False"
 
