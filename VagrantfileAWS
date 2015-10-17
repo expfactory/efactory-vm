@@ -8,9 +8,9 @@ $script = <<SCRIPT
 if [ ! -d $HOME/miniconda ]
 then
  # install anaconda
- wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86.sh
- chmod +x Miniconda-latest-Linux-x86.sh
- ./Miniconda-latest-Linux-x86.sh -b
+ wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+ chmod +x miniconda.sh
+ ./miniconda.sh -b
  echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .bashrc
  echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
 fi
@@ -96,20 +96,28 @@ fi
 # User should log in to battery folder
 cd $HOME/psiturk-battery
 echo "Psiturkpy-battery generation complete!"
-echo "Log in with ssh vagrant"
-echo "Your machine's external address is 192.128.0.20"
-
-SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+  config.ssh.forward_x11 = true
 
   config.vm.define :engine do |engine_config|
-    engine_config.vm.box = "ubuntu12.04-x86"
-    engine_config.vm.box_url = "http://files.vagrantup.com/precise32.box"
+      #engine_config.vm.box = "aws"
+      engine_config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+      engine_config.vm.hostname = 'psiturkey-vm'
 
-    engine_config.vm.network :private_network, ip: "192.128.0.20"
-    engine_config.vm.hostname = 'psiturk-battery'
-
-    engine_config.vm.provision "shell", :privileged => false, inline: $script
+    engine_config.vm.provider :aws do |aws, override|
+        aws.access_key_id = "AWS_ACCESS_KEY"
+        aws.secret_access_key = "AWS_SECRET_ACCESS_KEY"
+        aws.keypair_name = "AWS_KEYPAIR_NAME"
+        aws.region = "us-west-2" 
+        aws.ami = "ami-5189a661"
+        aws.instance_type = "t2.small"
+        aws.security_groups = "AWS_SECURITY_GROUP"
+        aws.iam_instance_profile_name = "AWS_IAM_INSTANCE_PROFILE_NAME"
+        override.ssh.username = "ubuntu"
+        override.ssh.private_key_path = "AWS_PRIVATE_KEY_PAIR"
+        override.nfs.functional = false
+    end
+        engine_config.vm.provision "shell", :privileged => false, inline: $script
   end
 end
