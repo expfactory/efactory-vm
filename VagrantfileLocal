@@ -79,8 +79,8 @@ else
                battery_repo = sys.argv[1]
                experiment_repo = sys.argv[2]
                battery_dest = sys.argv[3]
-               config = {'dbusername': 'username', 'dbtable': 'tablename', 'description': 'Description', 'title': 'Cognitive Paradigm', 'dbtype': 'mysql', 'dbhost': 'host.host.edu', 'dbpasswordconfirm': 'pwpwpw', 'Submit': 'Submit', 'dbname': 'databasename', 'organization_name': 'Stanford', 'database_url': 'postgresql://postgres:psiturkpy@localhost:5432/psiturkpy', 'contact_email_on_error': 'vsochat@gmail.com', 'dbpassword': 'pwpwpw', 'deploychoice': 'vagrant', 'amt_keywords': 'Keywords'}
-               experiments = ['simple_rt', 'local_global', 'letter_memory']
+               config = [SUB_CONFIG_SUB]
+               experiments = [SUB_EXPERIMENTS_SUB]
                generate(battery_repo,battery_dest,experiment_repo,experiments=experiments,config=config)        
         """ >/tmp/aijfaef
         sudo cp /tmp/aijfaef $HOME/psiturk-build/psiturk-vm/script/custom_setup_battery.py
