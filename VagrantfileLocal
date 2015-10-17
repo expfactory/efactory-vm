@@ -58,7 +58,7 @@ then
   $HOME/miniconda/bin/python setup.py install
 fi
 
-# Download experiments and battery repos
+# Download experiments, battery, vm, doc repos
 chmod u+x $HOME/psiturk-build/psiturk-python/script/download_repos.py
 $HOME/miniconda/bin/python $HOME/psiturk-build/psiturk-python/script/download_repos.py $HOME/psiturk-build
 
@@ -68,29 +68,30 @@ sudo mv $HOME/psiturk-build/vm/static/index.html /usr/share/nginx/www/index.html
 CUSTOM_INSTALL="False"
 
 if [[ $CUSTOM_INSTALL == "False" ]] ; then
-    # Create and run script for all valid experiments
     chmod u+x $HOME/psiturk-build/psiturk-python/script/standard_setup_battery.py 
-    $HOME/miniconda/bin/python $HOME/psiturk-build/psiturk-python/script/standard_setup_battery.py $HOME/psiturk-build/battery $HOME/psiturk-build/experiments $HOME/psiturk-battery
+    $HOME/miniconda/bin/python $HOME/psiturk-build/psiturk-python/script/standard_setup_battery.py $HOME/psiturk-battery
 else
 
-    if ! [ -f $HOME/psiturk-build/psiturk-python/script/custom_setup_battery.py ]; then
-        echo """#!/usr/bin/python
-               from psiturkpy.battery import generate
-               import sys
-               battery_repo = sys.argv[1]
-               experiment_repo = sys.argv[2]
-               battery_dest = sys.argv[3]
-               config = [SUB_CONFIG_SUB]
-               experiments = [SUB_EXPERIMENTS_SUB]
-               generate(battery_repo,battery_dest,experiment_repo,experiments=experiments,config=config)        
-        """ >/tmp/aijfaef
-        sudo cp /tmp/aijfaef $HOME/psiturk-build/psiturk-vm/script/custom_setup_battery.py
-    fi
+if ! [ -f $HOME/custom_setup_battery.py ]; then
+echo """
+#!/usr/bin/python
+from psiturkpy.battery import generate
+import sys
+battery_dest = sys.argv[1]
+config = [SUB_CONFIG_SUB]
+experiments = [SUB_EXPERIMENTS_SUB]
+generate(battery_dest=battery_dest,experiments=experiments,config=config)        
+""" >/tmp/aijfaef
+sudo cp /tmp/aijfaef $HOME/custom_setup_battery.py
+fi
 
-    chmod u+x $HOME/psiturk-build/psiturk-python/script/custom_setup_battery.py
-    $HOME/miniconda/bin/python $HOME/psiturk-build/psiturk-python/script/custom_setup_battery.py $HOME/psiturk-build/battery $HOME/psiturk-build/experiments $HOME/psiturk-battery
+chmod u+x $HOME/custom_setup_battery.py
+$HOME/miniconda/bin/python $HOME/custom_setup_battery.py $HOME/psiturk-battery
 
 fi 
+
+# User should log in to battery folder
+cd $HOME/psiturk-battery
 
 SCRIPT
 
