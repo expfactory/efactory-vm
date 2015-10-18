@@ -66,7 +66,7 @@ $HOME/miniconda/bin/python $HOME/psiturk-build/psiturk-python/script/download_re
 sudo mysql -uroot -ppsiturkpy < $HOME/psiturk-build/vm/script/createdb.sql
 
 # Replace standard index.html with link to psiturkpy docs
-sudo mv $HOME/psiturk-build/vm/static/index.html /usr/share/nginx/www/index.html
+sudo mv $HOME/psiturk-build/vm/static/index.html /usr/share/nginx/html/index.html
 
 CUSTOM_INSTALL="False"
 
@@ -96,6 +96,8 @@ fi
 # User should log in to battery folder
 cd $HOME/psiturk-battery
 echo "Psiturkpy-battery generation complete!"
+
+SCRIPT
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.forward_x11 = true
