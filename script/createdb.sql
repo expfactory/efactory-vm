@@ -1,3 +1,3 @@
-CREATE USER 'psiturkpy'@'localhost' IDENTIFIED BY 'psiturkpy';
+CREATE USER 'efactory'@'localhost' IDENTIFIED BY 'efactory';
 CREATE DATABASE psiturkpy;
-GRANT ALL PRIVILEGES ON psiturkpy.* TO 'psiturkpy'@'localhost';
+GRANT ALL PRIVILEGES ON psiturkpy.* TO 'efactory'@'localhost';
