@@ -63,7 +63,7 @@ fi
 # Download experiments, battery, vm, doc repos
 sudo chmod u+x $HOME/efactory-build/efactory-python/script/download_repos.py
 $HOME/miniconda/bin/python $HOME/efactory-build/efactory-python/script/download_repos.py $HOME/efactory-build
-sudo mysql -uroot -pefactorypy < $HOME/efactory-build/vm/script/createdb.sql
+sudo mysql -uroot -efactory < $HOME/efactory-build/vm/script/createdb.sql
 
 # Replace standard index.html with link to efactory docs
 sudo mv $HOME/efactory-build/vm/static/index.html /usr/share/nginx/html/index.html
