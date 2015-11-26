@@ -1,4 +1,4 @@
-# efactory-vm, testing
+# expfactory-vm, testing
 # poldracklab
 
 VAGRANTFILE_API_VERSION = "2"
@@ -27,22 +27,22 @@ sudo apt-get install -y --force-yes git
 sudo apt-get install -y --force-yes build-essential
 sudo apt-get install -y --force-yes nginx
 
-# Install efactory
+# Install expfactory
 sudo apt-get install -y --force-yes libreadline6 libreadline6-dev
 sudo apt-get install -y --force-yes libncurses-dev
 $HOME/miniconda/bin/pip install python-Levenshtein
-$HOME/miniconda/bin/pip install git+git://github.com/NYUCCL/efactory.git@master
+$HOME/miniconda/bin/pip install git+git://github.com/NYUCCL/expfactory.git@master
 
 # Install postgresql (not tested)
 sudo apt-get install -y --force-yes postgresql postgresql-contrib
 sudo apt-get install -y --force-yes pgadmin3
 sudo apt-get install -y --force-yes libpq-dev
-sudo -u postgres psql -c "CREATE USER efactory WITH PASSWORD 'efactory';"
-sudo -u postgres psql -c "CREATE DATABASE efactory;"
+sudo -u postgres psql -c "CREATE USER expfactory WITH PASSWORD 'expfactory';"
+sudo -u postgres psql -c "CREATE DATABASE expfactory;"
 
 # Install MySQL
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password efactory'
-sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password efactory'
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password expfactory'
+sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password expfactory'
 sudo apt-get install -y --force-yes libmysqlclient-dev
 sudo apt-get install -y --force-yes mysql-server
 $HOME/miniconda/bin/pip install MySQL-python
@@ -50,35 +50,35 @@ sudo apt-get install -y --force-yes vim
 
 sudo /etc/init.d/nginx start
 
-# Install efactory to generate everything else
-mkdir -p $HOME/efactory-build
-if [ ! -d $HOME/efactory-build/efactory-python ]
+# Install expfactory to generate everything else
+mkdir -p $HOME/expfactory-build
+if [ ! -d $HOME/expfactory-build/expfactory-python ]
 then
-  git clone https://github.com/expfactory/efactory-python.git $HOME/efactory-build/efactory-python
-  cd $HOME/efactory-build/efactory-python
+  git clone https://github.com/expfactory/expfactory-python.git $HOME/expfactory-build/expfactory-python
+  cd $HOME/expfactory-build/expfactory-python
   $HOME/miniconda/bin/pip install -r requirements.txt  
   $HOME/miniconda/bin/python setup.py install
 fi
 
 # Download experiments, battery, vm, doc repos
-sudo chmod u+x $HOME/efactory-build/efactory-python/script/download_repos.py
-$HOME/miniconda/bin/python $HOME/efactory-build/efactory-python/script/download_repos.py $HOME/efactory-build
-sudo mysql -uroot -efactory < $HOME/efactory-build/vm/script/createdb.sql
+sudo chmod u+x $HOME/expfactory-build/expfactory-python/script/download_repos.py
+$HOME/miniconda/bin/python $HOME/expfactory-build/expfactory-python/script/download_repos.py $HOME/expfactory-build
+sudo mysql -uroot -expfactory < $HOME/expfactory-build/vm/script/createdb.sql
 
-# Replace standard index.html with link to efactory docs
-sudo mv $HOME/efactory-build/vm/static/index.html /usr/share/nginx/html/index.html
+# Replace standard index.html with link to expfactory docs
+sudo mv $HOME/expfactory-build/vm/static/index.html /usr/share/nginx/html/index.html
 
 CUSTOM_INSTALL="False"
 
 if [[ $CUSTOM_INSTALL == "False" ]] ; then
-    sudo chmod u+x $HOME/efactory-build/efactory-python/script/standard_setup_battery.py 
-    $HOME/miniconda/bin/python $HOME/efactory-build/efactory-python/script/standard_setup_battery.py $HOME/efactory-battery
+    sudo chmod u+x $HOME/expfactory-build/expfactory-python/script/standard_setup_battery.py 
+    $HOME/miniconda/bin/python $HOME/expfactory-build/expfactory-python/script/standard_setup_battery.py $HOME/expfactory-battery
 else
 
 if ! [ -f $HOME/custom_setup_battery.py ]; then
 echo """
 #!/usr/bin/python
-from efactory.battery import generate
+from expfactory.battery import generate
 import sys
 battery_dest = sys.argv[1]
 config = [SUB_CONFIG_SUB]
@@ -89,12 +89,12 @@ sudo cp /tmp/aijfaef $HOME/custom_setup_battery.py
 fi
 
 sudo chmod u+x $HOME/custom_setup_battery.py
-$HOME/miniconda/bin/python $HOME/custom_setup_battery.py $HOME/efactory-battery
+$HOME/miniconda/bin/python $HOME/custom_setup_battery.py $HOME/expfactory-battery
 
 fi 
 
 # User should log in to battery folder
-cd $HOME/efactory-battery
+cd $HOME/expfactory-battery
 echo "Experiment factory battery generation complete!"
 echo "Log in with ssh vagrant"
 echo "Your machine's external address is 192.128.0.20"
@@ -108,7 +108,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     engine_config.vm.box_url = "http://files.vagrantup.com/precise32.box"
 
     engine_config.vm.network :private_network, ip: "192.128.0.20"
-    engine_config.vm.hostname = 'efactory-battery'
+    engine_config.vm.hostname = 'expfactory-battery'
 
     engine_config.vm.provision "shell", :privileged => false, inline: $script
   end

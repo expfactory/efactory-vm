@@ -1,4 +1,4 @@
-# efactory-vm: A virtual machine to deploy experiment factory infrastructure
+# expfactory-vm: A virtual machine to deploy experiment factory infrastructure
 
 ## Setting up the virtual machine
 
@@ -9,9 +9,9 @@
 3. If you don't already have it, install [git] (https://git-scm.com/downloads)
 
 4.  cd to the directory where you want to house the project, and then clone the vagrant setup:
-`git clone https://github.com/expfactory/efactory-vm.git`
+`git clone https://github.com/expfactory/expfactory-vm.git`
 
-5. cd into the vm directory: `cd efactory-vm`
+5. cd into the vm directory: `cd expfactory-vm`
 
 6. (instruction here for cloning/generating experiment)
 
