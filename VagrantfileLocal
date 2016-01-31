@@ -21,16 +21,16 @@ $HOME/miniconda2/bin/pip install setuptools
 $HOME/miniconda2/bin/conda install --yes pip numpy scipy nose traits networkx
 $HOME/miniconda2/bin/conda install --yes pandas
 
-sudo apt-get update > /dev/null
-sudo apt-get install -y --force-yes git 
-sudo apt-get install -y --force-yes build-essential
+sudo apt-get update -y > /dev/null
+sudo apt-get install -y --force-yes git-core
+sudo apt-get install -y --force-yes build-essential libssl-dev libcurl4-gnutls-dev libexpat1-dev gettext unzip
 sudo apt-get install -y --force-yes nginx
 
 # Install expfactory
 sudo apt-get install -y --force-yes libreadline6 libreadline6-dev
 sudo apt-get install -y --force-yes libncurses-dev
 $HOME/miniconda2/bin/pip install python-Levenshtein
-$HOME/miniconda2/bin/pip install git+git://github.com/NYUCCL/expfactory.git@master
+$HOME/miniconda2/bin/pip install expfactory
 
 # Install postgresql (not tested)
 sudo apt-get install -y --force-yes postgresql postgresql-contrib
@@ -63,10 +63,10 @@ fi
 # Download experiments, battery, vm, doc repos
 sudo chmod u+x $HOME/expfactory-build/expfactory-python/script/download_repos.py
 $HOME/miniconda2/bin/python $HOME/expfactory-build/expfactory-python/script/download_repos.py $HOME/expfactory-build
-sudo mysql -uroot -expfactory < $HOME/expfactory-build/vm/script/createdb.sql
+sudo mysql -uroot -pexpfactory < $HOME/expfactory-build/vm/script/createdb.sql
 
 # Replace standard index.html with link to expfactory docs
-sudo mv $HOME/expfactory-build/vm/static/index.html /usr/share/nginx/html/index.html
+sudo mv $HOME/expfactory-build/vm/static/index.html /var/www/nginx-default/index.html
 
 CUSTOM_INSTALL="False"
 
