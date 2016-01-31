@@ -5,22 +5,21 @@ VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 
-if [ ! -d $HOME/miniconda ]
+if [ ! -d $HOME/miniconda2 ]
 then
  # install anaconda
  wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
  chmod +x miniconda.sh
  ./miniconda.sh -b
- echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .bashrc
- echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
+ echo "export PATH=$HOME/miniconda2/bin:\\$PATH" >> .bashrc
+ echo "export PATH=$HOME/miniconda2/bin:\\$PATH" >> .env
 fi
 
 # install python packages
-$HOME/miniconda/bin/conda update --yes conda
-$HOME/miniconda/bin/pip install setuptools
-$HOME/miniconda/bin/pip install psycopg2
-$HOME/miniconda/bin/conda install --yes pip numpy scipy nose traits networkx
-$HOME/miniconda/bin/conda install --yes pandas
+$HOME/miniconda2/bin/conda update --yes conda
+$HOME/miniconda2/bin/pip install setuptools
+$HOME/miniconda2/bin/conda install --yes pip numpy scipy nose traits networkx
+$HOME/miniconda2/bin/conda install --yes pandas
 
 sudo apt-get update > /dev/null
 sudo apt-get install -y --force-yes git 
@@ -30,8 +29,8 @@ sudo apt-get install -y --force-yes nginx
 # Install expfactory
 sudo apt-get install -y --force-yes libreadline6 libreadline6-dev
 sudo apt-get install -y --force-yes libncurses-dev
-$HOME/miniconda/bin/pip install python-Levenshtein
-$HOME/miniconda/bin/pip install git+git://github.com/NYUCCL/expfactory.git@master
+$HOME/miniconda2/bin/pip install python-Levenshtein
+$HOME/miniconda2/bin/pip install git+git://github.com/NYUCCL/expfactory.git@master
 
 # Install postgresql (not tested)
 sudo apt-get install -y --force-yes postgresql postgresql-contrib
@@ -39,13 +38,14 @@ sudo apt-get install -y --force-yes pgadmin3
 sudo apt-get install -y --force-yes libpq-dev
 sudo -u postgres psql -c "CREATE USER expfactory WITH PASSWORD 'expfactory';"
 sudo -u postgres psql -c "CREATE DATABASE expfactory;"
+$HOME/miniconda2/bin/pip install psycopg2
 
 # Install MySQL
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password expfactory'
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password_again password expfactory'
 sudo apt-get install -y --force-yes libmysqlclient-dev
 sudo apt-get install -y --force-yes mysql-server
-$HOME/miniconda/bin/pip install MySQL-python
+$HOME/miniconda2/bin/pip install MySQL-python
 sudo apt-get install -y --force-yes vim
 
 sudo /etc/init.d/nginx start
@@ -56,13 +56,13 @@ if [ ! -d $HOME/expfactory-build/expfactory-python ]
 then
   git clone https://github.com/expfactory/expfactory-python.git $HOME/expfactory-build/expfactory-python
   cd $HOME/expfactory-build/expfactory-python
-  $HOME/miniconda/bin/pip install -r requirements.txt  
-  $HOME/miniconda/bin/python setup.py install
+  $HOME/miniconda2/bin/pip install -r requirements.txt  
+  $HOME/miniconda2/bin/python setup.py install
 fi
 
 # Download experiments, battery, vm, doc repos
 sudo chmod u+x $HOME/expfactory-build/expfactory-python/script/download_repos.py
-$HOME/miniconda/bin/python $HOME/expfactory-build/expfactory-python/script/download_repos.py $HOME/expfactory-build
+$HOME/miniconda2/bin/python $HOME/expfactory-build/expfactory-python/script/download_repos.py $HOME/expfactory-build
 sudo mysql -uroot -expfactory < $HOME/expfactory-build/vm/script/createdb.sql
 
 # Replace standard index.html with link to expfactory docs
@@ -72,7 +72,7 @@ CUSTOM_INSTALL="False"
 
 if [[ $CUSTOM_INSTALL == "False" ]] ; then
     sudo chmod u+x $HOME/expfactory-build/expfactory-python/script/standard_setup_battery.py 
-    $HOME/miniconda/bin/python $HOME/expfactory-build/expfactory-python/script/standard_setup_battery.py $HOME/expfactory-battery
+    $HOME/miniconda2/bin/python $HOME/expfactory-build/expfactory-python/script/standard_setup_battery.py $HOME/expfactory-battery
 else
 
 if ! [ -f $HOME/custom_setup_battery.py ]; then
@@ -89,7 +89,7 @@ sudo cp /tmp/aijfaef $HOME/custom_setup_battery.py
 fi
 
 sudo chmod u+x $HOME/custom_setup_battery.py
-$HOME/miniconda/bin/python $HOME/custom_setup_battery.py $HOME/expfactory-battery
+$HOME/miniconda2/bin/python $HOME/custom_setup_battery.py $HOME/expfactory-battery
 
 fi 
 
@@ -104,8 +104,8 @@ SCRIPT
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define :engine do |engine_config|
-    engine_config.vm.box = "ubuntu12.04-x86"
-    engine_config.vm.box_url = "http://files.vagrantup.com/precise32.box"
+    engine_config.vm.box = "ubuntu12.04-x64"
+    engine_config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 
     engine_config.vm.network :private_network, ip: "192.128.0.20"
     engine_config.vm.hostname = 'expfactory-battery'

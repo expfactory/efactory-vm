@@ -1,25 +1,25 @@
-# psi-turkey vm, testing
+# psi-turkey vm
 # poldracklab
 
 VAGRANTFILE_API_VERSION = "2"
 
 $script = <<SCRIPT
 
-if [ ! -d $HOME/miniconda ]
+if [ ! -d $HOME/miniconda2 ]
 then
  # install anaconda
  wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
  chmod +x miniconda.sh
  ./miniconda.sh -b
- echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .bashrc
- echo "export PATH=$HOME/miniconda/bin:\\$PATH" >> .env
+ echo "export PATH=$HOME/miniconda2/bin:\\$PATH" >> .bashrc
+ echo "export PATH=$HOME/miniconda2/bin:\\$PATH" >> .env
 fi
 
 # install python packages
-$HOME/miniconda/bin/conda update --yes conda
-$HOME/miniconda/bin/pip install setuptools
-$HOME/miniconda/bin/conda install --yes pip numpy scipy nose traits networkx
-$HOME/miniconda/bin/conda install --yes pandas
+$HOME/miniconda2/bin/conda update --yes conda
+$HOME/miniconda2/bin/pip install setuptools
+$HOME/miniconda2/bin/conda install --yes pip numpy scipy nose traits networkx
+$HOME/miniconda2/bin/conda install --yes pandas
 
 sudo apt-get update > /dev/null
 sudo apt-get install -y --force-yes git 
@@ -29,8 +29,8 @@ sudo apt-get install -y --force-yes nginx
 # Install psiturk
 sudo apt-get install -y --force-yes libreadline6 libreadline6-dev
 sudo apt-get install -y --force-yes libncurses-dev
-$HOME/miniconda/bin/pip install python-Levenshtein
-$HOME/miniconda/bin/pip install git+git://github.com/NYUCCL/psiTurk.git@master
+$HOME/miniconda2/bin/pip install python-Levenshtein
+$HOME/miniconda2/bin/pip install git+git://github.com/NYUCCL/psiTurk.git@master
 
 # Install postgresql
 sudo apt-get install -y --force-yes postgresql postgresql-contrib
@@ -51,12 +51,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.ssh.forward_x11 = true
 
   config.vm.define :engine do |engine_config|
-      engine_config.vm.box = "aws"
-      #engine_config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
+      #engine_config.vm.box = "aws"
+      engine_config.vm.box_url = "https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box"
       engine_config.vm.hostname = 'expfactory-vm'
 
     engine_config.vm.provider :aws do |aws, override|
-        aws.access_key_id = "AWS_ACCES_KEY_ID"
+        aws.access_key_id = "AWS_ACCESS_KEY_ID"
         aws.secret_access_key = "AWS_SECRET_ACCESS_KEY"
         aws.keypair_name = "AWS_KEYPAIR_NAME"
         aws.region = "us-west-2" 
