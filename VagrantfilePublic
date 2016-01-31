@@ -33,7 +33,8 @@ $HOME/miniconda2/bin/pip install python-Levenshtein
 $HOME/miniconda2/bin/pip install expfactory
 
 # Psiturk
-$HOME/miniconda2/bin/pip install git+git://github.com/NYUCCL/psiTurk.git@master
+$HOME/miniconda2/bin/pip install psiturk
+sudo pip install --upgrade requests
 psiturk-setup-example
 
 # Install postgresql (not tested)

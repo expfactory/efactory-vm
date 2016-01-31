@@ -32,6 +32,11 @@ sudo apt-get install -y --force-yes libncurses-dev
 $HOME/miniconda2/bin/pip install python-Levenshtein
 $HOME/miniconda2/bin/pip install expfactory
 
+# Psiturk
+$HOME/miniconda2/bin/pip install psiturk
+sudo pip install --upgrade requests
+psiturk-setup-example
+
 # Install postgresql (not tested)
 sudo apt-get install -y --force-yes postgresql postgresql-contrib
 sudo apt-get install -y --force-yes pgadmin3
